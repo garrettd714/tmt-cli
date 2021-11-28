@@ -1,0 +1,7 @@
+README.md
+LICENSE.txt
+CHANGELOG.md
+exe/tmt
+lib/**/*
+tmt.gemspec
+tmt.manifest
