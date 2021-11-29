@@ -35,7 +35,7 @@ module Tmt
 
       # .ATVI211217P62.5 => put|call
       def porc
-        @porc ||= id.match(/(C|P).+$/)[1] == 'P' ? 'put' : 'call'
+        @porc ||= id.match(/\d(C|P).+$/)[1] == 'P' ? 'put' : 'call'
       end
 
       private
