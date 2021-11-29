@@ -18,7 +18,6 @@ async def main_loop(session: TastyAPISession, streamer: DataStreamer):
 
     # Subscribe
     await streamer.add_data_sub(sub_values)
-    # LOGGER.info('Subscribed to: {}'.format(symbols.split(',')))
 
     # Update the bid/ask via TMT-CLI
     streamer_symbols = symbols.split(',')
@@ -33,10 +32,7 @@ async def main_loop(session: TastyAPISession, streamer: DataStreamer):
                 except:
                     print('.', end='')
                     continue
-                # LOGGER.info('{} removed, symbols: {}'.format(data['eventSymbol'], streamer_symbols))
-                # LOGGER.info('Symbol: {}\tBid: {}\tAsk {}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
         else:
-            # LOGGER.info('All symbols have updated.')
             system('tmt tasty_refresh')
             break
 
@@ -45,7 +41,6 @@ def main():
     tasty_client = tasty_session.create_new_session(environ.get('TW_USER', ""), environ.get('TW_PASSWORD', ""))
 
     streamer = DataStreamer(tasty_client)
-    # LOGGER.info('Streamer token: %s' % streamer.get_streamer_token())
     loop = asyncio.get_event_loop()
 
     try:
@@ -54,9 +49,7 @@ def main():
         LOGGER.exception('Exception in streamer')
     except (KeyboardInterrupt, RuntimeError) as e:
         system('tmt tasty_refresh')
-        print(' Exit requested')
     finally:
-        # find all futures/tasks still running and wait for them to finish
         if loop.is_running():
             pending_tasks = [
                 task for task in asyncio.all_tasks() if not task.done()
