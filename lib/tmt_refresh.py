@@ -18,13 +18,27 @@ async def main_loop(session: TastyAPISession, streamer: DataStreamer):
 
     # Subscribe
     await streamer.add_data_sub(sub_values)
-    LOGGER.info('Subscribed to: {}'.format(symbols.split(',')))
+    # LOGGER.info('Subscribed to: {}'.format(symbols.split(',')))
 
     # Update the bid/ask via TMT-CLI
+    streamer_symbols = symbols.split(',')
     async for item in streamer.listen():
-        for data in item.data:
-            system('tmt tasty_stream {} --bid={} --ask={}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
-            # LOGGER.info('Symbol: {}\tBid: {}\tAsk {}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
+        if streamer_symbols:
+            for data in item.data:
+                try:
+                    streamer_symbols.remove(data['eventSymbol'])
+                    system('tmt tasty_stream {} --bid={} --ask={}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
+                    if not streamer_symbols:
+                        break
+                except:
+                    print('.', end='')
+                    continue
+                # LOGGER.info('{} removed, symbols: {}'.format(data['eventSymbol'], streamer_symbols))
+                # LOGGER.info('Symbol: {}\tBid: {}\tAsk {}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
+        else:
+            # LOGGER.info('All symbols have updated.')
+            system('tmt tasty_refresh')
+            break
 
 
 def main():
@@ -37,7 +51,7 @@ def main():
     try:
         loop.run_until_complete(main_loop(tasty_client, streamer))
     except Exception:
-        LOGGER.exception('Exception in main loop')
+        LOGGER.exception('Exception in streamer')
     except (KeyboardInterrupt, RuntimeError) as e:
         system('tmt tasty_refresh')
         print(' Exit requested')
