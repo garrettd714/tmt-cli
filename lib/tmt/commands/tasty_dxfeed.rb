@@ -12,7 +12,7 @@ module Tmt
       end
 
       def execute(_input: $stdin, output: $stdout)
-        output.puts Trade.active.map(&:symbols).flatten.compact.join(',')
+        output.puts (Trade.active.map(&:symbols) + Trade.active.stocks.map(&:ticker)).flatten.compact.join(',')
       end
     end
   end
