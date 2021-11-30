@@ -27,7 +27,7 @@ module Tmt
 
       request = Net::HTTP::Get.new(url)
       request['x-rapidapi-host'] = 'option-chain.p.rapidapi.com'
-      request['x-rapidapi-key'] = '9caff36cbfmsh013515964f8d7abp126e99jsnba1ebad88996'
+      request['x-rapidapi-key'] = ENV.fetch('RAPIDAPI_KEY', '')
 
       response = http.request(request)
       raise StandardError, "Error fetching live data for #{ticker.upcase}. Enter trade 'mark' ['ticker_price'] manually\n" if response.code != '200'
