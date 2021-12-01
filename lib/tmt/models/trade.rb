@@ -178,13 +178,13 @@ class Trade < ApplicationRecord
   def dxfeed_put_symbol
     return ".#{ticker.upcase}#{expiration.strftime("%y%m%d")}P#{(put % 1).zero? ? put.to_i : put}" if put.present? && !futures?
 
-    "./#{root_symbol.upcase}#{expiration.strftime('%y')}#{futures_month_code[expiration.strftime('%B')]}P#{(put % 1).zero? ? put.to_i : put}:XCME" if put.present? && root_symbol.present?
+    "./#{root_symbol.upcase}#{futures_month_code[expiration.strftime('%B')]}#{expiration.strftime('%y')}P#{(put % 1).zero? ? put.to_i : put}:XCME" if put.present? && root_symbol.present?
   end
 
   def dxfeed_call_symbol
     return ".#{ticker.upcase}#{expiration.strftime("%y%m%d")}C#{(call % 1).zero? ? call.to_i : call}" if call.present? && !futures?
 
-    "./#{root_symbol.upcase}#{expiration.strftime('%y')}#{futures_month_code[expiration.strftime('%B')]}C#{(call % 1).zero? ? call.to_i : call}:XCME" if call.present? && root_symbol.present?
+    "./#{root_symbol.upcase}#{futures_month_code[expiration.strftime('%B')]}#{expiration.strftime('%y')}C#{(call % 1).zero? ? call.to_i : call}:XCME" if call.present? && root_symbol.present?
   end
 
   def put_mid
@@ -193,10 +193,6 @@ class Trade < ApplicationRecord
 
   def call_mid
     (((call_bid || 0) + (call_ask || 0)) / 2).round(2)
-  end
-
-  def root_symbol
-    'ESZ'
   end
 
   def futures_month_code
