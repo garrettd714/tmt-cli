@@ -74,7 +74,7 @@ module Tmt
               'expiration', trade.expiration.strftime('%m/%d/%y    '),
               trade.futures? ? 'roll_indicator' : '', trade.futures? && trade.roll_indicator.negative? ? trade.roll_indicator : nil,
               '', nil,
-              '', nil
+              trade.adjustment? ? 'trade P/L %' : '', trade.adjustment? ? format('%.2f', ((trade.total_credit - trade.mark) / trade.total_credit) * 100) : nil
             ],
             [
               'trade_id', trade.id,
@@ -100,7 +100,7 @@ module Tmt
           renderer.filter = ->(val, row_index, col_index) do
             if col_index.even?
               pastel.white.on_blue(val.titleize)
-            elsif col_index == 1 && [4, 5].include?(row_index) || col_index == 3 && row_index == 5 || col_index == 7 && row_index == 7
+            elsif col_index == 1 && [4, 5].include?(row_index) || col_index == 3 && row_index == 5 || col_index == 7 && [6, 7].include?(row_index)
               val.to_f.zero? ? val : (val.to_f.positive? ? pastel.green(val) : pastel.red(val))
             elsif col_index == 1 && row_index == 0
               pastel.black.on_bright_cyan(val.upcase)
