@@ -17,7 +17,7 @@ module Tmt
     end
 
     def self.test(trade) # rubocop:disable Metrics/AbcSize
-      range = 50..(trade.mark * 100).to_i
+      range = trade.futures? ? 50..(trade.mark * 100).to_i : 5..(trade.mark * 100).to_i
       price_range = range.to_a.reverse.reject do |n|
         n > 500 ? trade.futures? ? n % 25 != 0 : n % 5 != 0 : n % 5 != 0
       end
