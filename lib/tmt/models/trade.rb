@@ -51,6 +51,10 @@ class Trade < ApplicationRecord
     price > mark
   end
 
+  def loss?
+    price < mark
+  end
+
   def lte45days?
     days_left <= 45
   end
