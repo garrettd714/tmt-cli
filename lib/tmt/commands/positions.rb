@@ -57,7 +57,7 @@ module Tmt
           Trade.active.futures.order(expiration: :asc, opened: :asc).all.map do |t|
             [
               t.id,
-              t.ticker,
+              "#{t.ticker} #{pastel.dim(t.root_symbol)}",
               t.size,
               format('%.2f', t.price),
               format('%.2f', t.mark),
