@@ -27,7 +27,7 @@ module Tmt
           key(:mark).ask('Current mark price:', required: true, convert: :float)
         end
         %i[price mark].each { |f| responses[f] = format('%.2f', responses[f]) }
-        responses[:ticker].upcase!
+        responses[:ticker] = responses[:ticker].upcase
         trade = Trade.create!(**responses)
 
         Open2.new(trade, @options).execute if prompt.yes?('Would you like to continue?')
