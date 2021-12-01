@@ -48,7 +48,7 @@ module Tmt
               analysis(:keep_open, 6)
             end
           end
-        else # gt45days
+        else # gt45days & profit
           if !trade.futures? && trade.gain_gte50?
             analysis(:close, 1)
           else
@@ -56,7 +56,11 @@ module Tmt
           end
         end
       else # no profit
-        analysis(:keep_open, 7)
+        if trade.lte45days?
+          analysis(:keep_open, 7)
+        else # gt45days & loss
+          analysis(:keep_open, 7)
+        end
       end
     end
 
