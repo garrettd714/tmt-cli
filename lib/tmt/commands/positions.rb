@@ -46,7 +46,7 @@ module Tmt
             'size',
             ' price',
             '  mark',
-            '  p/l %',
+            '  p/dd %',
             '  p/l $',
             "expiration #{up_arrow}",
             'ar / roll',
