@@ -31,7 +31,8 @@ class Trade < ApplicationRecord
     other: 50
   }
 
-  scope :active, -> { where('closed_at IS NULL OR expiration < ?', Date.today) }
+  scope :active, -> { where(closed_at: nil) }
+  scope :closed, -> { where.not(closed_at: nil) }
   scope :futures, -> { where('ticker LIKE ?', '%/%') }
   scope :stocks, -> { where.not('ticker LIKE ?', '%/%') }
   scope :no_paper, -> { where.not(account: :paper) }
@@ -129,6 +130,10 @@ class Trade < ApplicationRecord
 
   def closed?
     closed_at.present?
+  end
+
+  def open?
+    closed_at.nil?
   end
 
   def days_held_pct_fraction
