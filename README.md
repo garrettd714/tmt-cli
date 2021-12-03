@@ -1,32 +1,28 @@
 # tmt-cli
 
-> TMT-CLI is a options trade tracking cli tool
+> TMT-CLI is a options trade tracking cli tool for my own personal use
 >
-> **NOT SUITABLE FOR USE!**
+> **<span style="color:red">REPO FOR REFERENCE PURPOSES ONLY!</span>**
 
 ## Purpose
-A simple cli (command-line-interface) with database to track option trades, show insights and optionally, update the prices on-demand.
+A simple Ruby cli (command-line-interface) with database (sqlite3) to track option trades, show insights and optionally, update the prices on-demand.
 
 ## Disclaimer
-Results are for entertainment purposes only. **Not financial advice**.
+All results are for entertainment purposes only. **Not financial advice**.
 
-> ** This is an unofficial, reverse-engineered API for Tastyworks. There is no implied warranty for any actions and results which arise from using it.
+> Utilizes an unofficial, reverse-engineered API for Tastyworks. There is no implied warranty for any actions and results which arise from using it.
 
 ## Features
 * Trade CRUD with easy cli commands
-    * `tmt -o` [O]pen trade
-    * `tmt -d aapl` (Active) Trade [D]etails
-    * `tmt -u aapl --args=` [U]pdate trade
-    * `tmt -c aapl {fill} {fees}` [C]lose trade
 * Positions table of active trades. ITM and breakeven indicators
 * Paper trade, does not require trade to be placed, with indicator
 * Support for on-demand mark & ticker price updates:
     * Stocks & ETFs support with either:
         * RapidApi (with paid subscription)
-        * Tastyworks** (with brokerage account)
+        * Tastyworks (with brokerage account)
 
     * Futures support with:
-        * Tastyworks** (with brokerage account)
+        * Tastyworks (with brokerage account)
 * Adjustment support with modified trade stats in Positions and indicator
 * [_experimental_] Trade management tool and insights
 * Fully supported selling options strategies:
@@ -35,27 +31,13 @@ Results are for entertainment purposes only. **Not financial advice**.
     * Short Call/Covered Call
 
 
-## Installation
+## Tastyworks
 
+Using a/the "unofficial" (Python) Tastyworks ([data streamer](https://github.com/boyan-soubachov/tastyworks_api)) for on-demand pricing/quotes updates. An "unofficial" Ruby API client, _for other future needs_, is present in CLI and does not rely on the Python package
 
-    $ gem install tmt
+_more info on data streamer portion @ [tastyworks_api](https://github.com/boyan-soubachov/tastyworks_api)_
 
-For "unofficial" Tastyworks** streamer support (optional):
-
-
-    $ pip install tastyworks
-_more info @ [tastyworks_api](https://github.com/boyan-soubachov/tastyworks_api)_
-
-...
-
-TODO: Write additional installation instructions here
-
-...
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Copyright
 
-Copyright (c) 2021 Garrett Davis. See [MIT License](LICENSE.txt) for further details.
+Copyright © 2021 Garrett Davis. See [MIT License](LICENSE.txt) for further details.
