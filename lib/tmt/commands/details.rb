@@ -124,7 +124,7 @@ module Tmt
       private
 
       def trade
-        @trade ||= id.to_i.zero? ? Trade.where('lower(ticker) = ?', id.downcase).last : Trade.find(id)
+        @trade ||= id.to_i.zero? ? Trade.where('lower(ticker) LIKE ?', "#{id.downcase}%").order(opened: :asc).last : Trade.find(id)
       end
     end
   end
