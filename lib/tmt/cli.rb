@@ -30,6 +30,24 @@ module Tmt
     end
     map %w[--version -v] => :version
 
+    # history
+    desc 'history ticker', 'Display trade history for ticker, -hi ticker [--history ticker]'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    method_option :ytd, type: :boolean, default: false,
+                        desc: 'Only display Year-to-Date history'
+    method_option :year, aliases: '-y', type: :numeric,
+                         desc: 'Display history for given year'
+    def history(ticker)
+      if options[:help]
+        invoke :help, ['history']
+      else
+        require_relative 'commands/history'
+        Tmt::Commands::History.new(ticker, options).execute
+      end
+    end
+    map %w[--history -hi] => :history
+
     # tasty_refresh
     desc 'tasty_refresh', 'Tasty streamer mark refresh on exit for internal use only'
     method_option :help, aliases: '-h', type: :boolean,
