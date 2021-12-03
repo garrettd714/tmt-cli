@@ -3,7 +3,7 @@
 require_relative '../command'
 require_relative '../db'
 require_relative '../tool'
-require_relative '../refresh'
+# require_relative '../refresh'
 require 'tty-table'
 require 'tty-spinner'
 require 'pastel'
@@ -46,7 +46,7 @@ module Tmt
             'size',
             ' price',
             '  mark',
-            '  p/dd %',
+            ' p/dd %',
             '  p/l $',
             "expiration #{up_arrow}",
             'ar / roll',
@@ -57,7 +57,7 @@ module Tmt
           Trade.active.futures.order(expiration: :asc, opened: :asc).all.map do |t|
             [
               t.id,
-              "#{t.ticker} #{pastel.dim(t.root_symbol)}",
+              "#{t.ticker.split(/(?<=[S])/)[0]}#{pastel.dim(t.ticker.split(/(?<=[S])/)[1])} #{pastel.dim(t.root_symbol)}",
               t.size,
               format('%.2f', t.price),
               format('%.2f', t.mark),
@@ -77,7 +77,7 @@ module Tmt
         table2 = TTY::Table.new(
           [
             'id',
-            'ticker  ',
+            'ticker   ',
             'size',
             ' price',
             '  mark',
