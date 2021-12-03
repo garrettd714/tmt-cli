@@ -42,7 +42,11 @@ module Tmt
       private
 
       def trade
-        @trade ||= Trade.active.where('lower(ticker) = ?', ticker.downcase).last
+        @trade ||= begin
+          return Trade.active.where('lower(ticker) = ?', ticker.downcase).last unless ticker == '/ES'
+
+          Trade.active.where('lower(ticker) LIKE ?', "#{ticker.downcase}%").last
+        end
       end
 
       def mid
