@@ -26,11 +26,11 @@ module Tmt
             key(:total_credit).ask('Total credits received:', convert: :float)
           end
           key(:init_margin_req).ask('Initial margin requirement:', convert: :float)
-          key(:put_delta).ask('Put delta:', value: '-0.15', convert: :float)
-          key(:call_delta).ask('Call delta:', value: '0.15', convert: :float)
           key(:ticker_price).ask('Current price of underlying:', convert: :float)
-          key(:pop).ask('Probability of Profit (POP):', value: '86', convert: :int)
-          key(:p50).ask('Probability of 50% Profit (P50):', value: '94', convert: :int)
+          key(:put_delta).ask('Put delta:', convert: :float)
+          key(:call_delta).ask('Call delta:', convert: :float)
+          key(:pop).ask('Probability of Profit (POP):', convert: :int)
+          key(:p50).ask('Probability of 50% Profit (P50):', convert: :int)
           key(:source).select('Source:', Trade.sources.symbolize_keys, required: true)
           key(:note).ask('Add note:')
         end
