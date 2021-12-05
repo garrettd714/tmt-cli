@@ -218,6 +218,13 @@ class Trade < ApplicationRecord
       'December' => ''
     }.freeze
   end
+
+  def order_chain_fees
+    return unless adjustment?
+
+    prev_trade = Trade.where(ticker: ticker).where("id < #{id}").order(opened: :desc).first
+    (prev_trade.adjustment? ? prev_trade.order_chain_fees + prev_trade.fees : prev_trade.fees) if prev_trade
+  end
 end
 
 # [46] pry(main)> m = ".ATVI211217P62.5".match(%r{\.([\/A-Z]+{1,4})})[1]
