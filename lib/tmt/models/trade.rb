@@ -170,6 +170,10 @@ class Trade < ApplicationRecord
     %r{/es}i.match?(ticker)
   end
 
+  def stock?
+    !futures?
+  end
+
   def itm?
     put && ticker_price < put || call && ticker_price > call
   end
