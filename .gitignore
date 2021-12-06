@@ -11,3 +11,7 @@
 .rspec_status
 # db
 tmt.db
+tmt-*.db
+
+# mac osx files
+.DS_Store
