@@ -137,7 +137,7 @@ module Tmt
             if row_index.zero?
               pastel.white.on_blue(val)
             elsif row_index.positive? && col_index == 1
-              val.match?(/\/be/) ? pastel.white.on_red(val.gsub(/\/be/, '')) : val.match?(/\/itm/) ? pastel.black.on_yellow(val.gsub(/\/itm/, '')) : val
+              val.match?(/\/be/) ? pastel.black.on_red(val.gsub(/\/be/, '')) : val.match?(/\/itm/) ? pastel.black.on_yellow(val.gsub(/\/itm/, '')) : val
             elsif row_index.positive? && [5, 6].include?(col_index)
               (val.to_f.positive? ? pastel.green(val) : pastel.red(val))
             elsif col_index == 10 && row_index.positive?
