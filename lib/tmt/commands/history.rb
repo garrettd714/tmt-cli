@@ -35,7 +35,7 @@ module Tmt
           ],
           [
             [
-              scope.length,
+              scope.where.not(adjustment: true).length,
               year ? format('%.2f', annualized_ror) : '--',
               format('%.2f', scope.map(&:points).reduce(:+)),
               format('%.2f', pl_pct_fraction * 100),
@@ -93,7 +93,7 @@ module Tmt
           ],
           [
             [
-              scope.length,
+              scope.where.not(adjustment: true).length,
               format('%.2f', scope.map { |t| t.points * t.multiplier * t.contracts }.reduce(:+) - total_fees),
               format('%.2f', scope.closed.map(&:days_held).reduce(:+) / scope.closed.length),
               scope.where(adjustment: true).length,
@@ -197,7 +197,7 @@ module Tmt
       end
 
       def total_fees
-        scope.closed.map(&:fees).compact.reduce(:+)
+        scope.closed.map(&:fees).compact.reduce(:+) || 0.00
       end
 
       def down_arrow
