@@ -12,31 +12,33 @@ module Tmt
   module Commands
     # List positions
     class Positions < Tmt::Command # rubocop:disable Metrics/ClassLength
-      attr_reader :options
+      attr_reader :options, :futures, :stocks
 
       def initialize(options) # rubocop:disable Lint/MissingSuper
         @options = options
+        @futures = Trade.active.futures.count > 0
+        @stocks = Trade.active.stocks.count > 0
       end
 
       def execute(_input: $stdin, output: $stdout) # rubocop:disable all
         errors = []
-        if options[:refresh]
-          spinner = TTY::Spinner.new('[:spinner] Refreshing data...')
-          spinner.auto_spin
-          scope = if Trade.active.stocks.count > 5
-                    errors << "Due to API rate limiting any paper trades have not been refreshed\n"
-                    Trade.active.stocks.no_paper
-                  else
-                    Trade.active.stocks
-                  end
-          scope.order(updated_at: :asc).each_with_index do |t, i|
-            Tmt::Refresh.call(t) if i < 5 # configurable
-            errors << "API limit reached, #{t.ticker.upcase} not refreshed. Enter trade 'mark' ['ticker_price'] manually\n" if i >= 5
-          rescue StandardError => e
-            errors << e.message
-          end
-          spinner.stop("Done!\n")
-        end
+        # if options[:refresh]
+        #   spinner = TTY::Spinner.new('[:spinner] Refreshing data...')
+        #   spinner.auto_spin
+        #   scope = if Trade.active.stocks.count > 5
+        #             errors << "Due to API rate limiting any paper trades have not been refreshed\n"
+        #             Trade.active.stocks.no_paper
+        #           else
+        #             Trade.active.stocks
+        #           end
+        #   scope.order(updated_at: :asc).each_with_index do |t, i|
+        #     Tmt::Refresh.call(t) if i < 5 # configurable
+        #     errors << "API limit reached, #{t.ticker.upcase} not refreshed. Enter trade 'mark' ['ticker_price'] manually\n" if i >= 5
+        #   rescue StandardError => e
+        #     errors << e.message
+        #   end
+        #   spinner.stop("Done!\n")
+        # end
 
         # futures table
         table = TTY::Table.new(
@@ -72,7 +74,7 @@ module Tmt
               format('%.2f', Tool.test(t)&.mark.to_f)
             ]
           end
-        )
+        ) if futures
         # stocks table
         table2 = TTY::Table.new(
           [
@@ -109,8 +111,10 @@ module Tmt
               format('%.2f', Tool.test(t)&.mark.to_f)
             ]
           end
-        )
-        output.puts "\nPOSITIONS\n" + (errors.present? ? "#{pastel.red(errors&.join)}" : "") + table.render(
+        ) if stocks
+
+        output.puts "\nPOSITIONS\n" + (errors.present? ? "#{pastel.red(errors&.join)}" : "")
+        output.puts table.render(
           :unicode,
           alignments: %i[left left center center right right right right right right center right],
           padding: [0, 1, 0, 1]
@@ -127,7 +131,8 @@ module Tmt
               val
             end
           end
-        } + "\n\n" + table2.render(
+        } + "\n\n" if futures
+        output.puts table2.render(
           :unicode,
           alignments: %i[left left center center right right right right right right center right],
           padding: [0, 1, 0, 1]
@@ -146,7 +151,7 @@ module Tmt
               val
             end
           end
-        }
+        } if stocks
       end
 
       def up_arrow
