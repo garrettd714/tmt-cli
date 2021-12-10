@@ -38,28 +38,31 @@ module Tmt
           else
             if trade.lte10days?
               analysis(:close, 2)
-            elsif trade.gain_gte40? && trade.ar_gte1x?
+            elsif trade.gain_gte40? && trade.ar_gte1x? && !trade.adjustment?
               analysis(:close, 3)
-            elsif trade.gain_gte30? && trade.ar_gte1_5x?
+            # elsif trade.gain_gte40? && trade.ar_gte2x? && trade.adjustment? && () # trade p/l % gte -100
+              # your adjustment trade
+            elsif trade.gain_gte30? && trade.ar_gte1_5x? && !trade.adjustment?
               analysis(:close, 4)
-            elsif trade.gain_gte20? && trade.ar_gte2x?
+            elsif trade.gain_gte20? && trade.ar_gte2x? && !trade.adjustment?
               analysis(:close, 5)
             else
-              analysis(:keep_open, 6)
+              analysis(:keep_open, 6) if !trade.adjustment?
+              new_analysis(:keep_open, :adjust_profit, :lte45days)
             end
           end
         else # gt45days & profit
           if !trade.futures? && trade.gain_gte50?
-            analysis(:close, 1)
+            new_analysis(:close, :profit, :gain_gte50)
           else
-            analysis(:keep_open, 0)
+            new_analysis(:keep_open, :profit, :gt45days)
           end
         end
       else # no profit
         if trade.lte45days?
-          analysis(:keep_open, 7)
+          new_analysis(:keep_open, :loss, :lte45days)
         else # gt45days & loss
-          analysis(:keep_open, 7)
+          new_analysis(:keep_open, :loss, :gt45days)
         end
       end
     end
@@ -81,6 +84,37 @@ module Tmt
         "You’re starting to show a decent profit. But to take a profit of less than 50% of our Max Profit,\nwe require the Accelerated Return to be at least above 1x to close the position",
         "This position is perfectly fine. You’re down a small amount and we still have a bit of time\nleft for this trade to play out and possibly get back to a profit"
       ]
+    end
+
+    def new_analysis(result, key1, key2)
+      OpenStruct.new(close?: result == :close, open?: result == :keep_open, result: result.to_s, details: new_details[result][key1][key2], mark: trade.mark.to_s)
+    end
+
+    def new_details
+      {
+        keep_open: {
+          profit: {
+            gt45days: "With over 45 days left to expiration, and still a bit of premium left on the options,\nkeep this trade open to collect more profit",
+            lte45days: "Starting to show a decent profit. But to take a profit of less than 50% of Max Profit,\nrequire the Accelerated Return to be at least above 1x to close the position"
+          },
+          loss: {
+            gt45days: "This position is perfectly fine. You’re down but, still have plenty of time left for\nthis trade to play out and possibly get back to a profit",
+            lte45days: "This position is down but, stay patient, stick to mechanics"
+          },
+          adjust_profit: {
+            lte45days: "Starting to show a decent profit. But to take a profit of less than 50% of Max Profit,\nrequire the Accelerated Return to be at least above 2x to close the position and be down\nless than 100% on the trade"
+          },
+          adjust_loss: {}
+        },
+        close: {
+          profit: {
+            gain_gte50: "We’ve made more than 50% of our maximum potential profit. We can close this trade and\nfree up the capital to establish a position in a further expiration cycle"
+          },
+          loss: {},
+          adjust_profit: {},
+          adjust_loss: {}
+        }
+      }
     end
   end
 end
