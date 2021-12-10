@@ -30,6 +30,26 @@ module Tmt
     end
     map %w[--version -v] => :version
 
+    # account
+    desc 'account token', 'Account summary, -a token [--ytd --year=2021 -y=2021]'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    method_option :ytd, type: :boolean, default: false,
+                        desc: 'Only display Year-to-Date history'
+    method_option :year, aliases: '-y', type: :numeric,
+                         desc: 'Display history for given year'
+    method_option :detail, aliases: '-d', type: :boolean,
+                         desc: 'Display table of ticker details'
+    def account(token)
+      if options[:help]
+        invoke :help, ['account']
+      else
+        require_relative 'commands/account'
+        Tmt::Commands::Account.new(token, options).execute
+      end
+    end
+    map %w[--account -a] => :account
+
     # history
     desc 'history ticker', 'Display trade history for ticker, -hi ticker [--history ticker]'
     method_option :help, aliases: '-h', type: :boolean,
