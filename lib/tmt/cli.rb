@@ -51,7 +51,7 @@ module Tmt
     map %w[--account -a] => :account
 
     # history
-    desc 'history ticker', 'Display trade history for ticker, -hi ticker [--history ticker]'
+    desc 'history ticker', 'Display trade history for ticker, -hi ticker [--history ticker] [--ytd --year=2021 -y=2021]'
     method_option :help, aliases: '-h', type: :boolean,
                          desc: 'Display usage information'
     method_option :ytd, type: :boolean, default: false,
@@ -69,7 +69,7 @@ module Tmt
     map %w[--history -hi] => :history
 
     # tasty_refresh
-    desc 'tasty_refresh', 'Tasty streamer mark refresh on exit for internal use only'
+    desc 'tasty_refresh', 'Tasty streamer mark refresher hook (for streamer use only)'
     method_option :help, aliases: '-h', type: :boolean,
                          desc: 'For tasty-refresh use only'
     def tasty_refresh(*)
@@ -82,7 +82,7 @@ module Tmt
     end
 
     # tasty_stream
-    desc 'tasty_stream', 'Tasty streamer update for internal use only'
+    desc 'tasty_stream', 'Tasty streamer quote update hook (for streamer use only)'
     method_option :help, aliases: '-h', type: :boolean,
                          desc: 'For tasty-refresh use only'
     method_option :bid, type: :numeric,
@@ -98,8 +98,8 @@ module Tmt
       end
     end
 
-    # dxfeed
-    desc 'tasty_dxfeed', 'Tasty streamer dxfeed symbols for internal use only'
+    # tasty_dxfeed
+    desc 'tasty_dxfeed', 'Tasty streamer dxfeed symbols hook (for streamer use only)'
     method_option :help, aliases: '-h', type: :boolean,
                          desc: 'For tasty-refresh use only'
     def tasty_dxfeed(*)
