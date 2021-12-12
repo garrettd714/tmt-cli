@@ -85,7 +85,7 @@ module Tmt
           end
         )
 
-        output.puts "\n#{year ? year.to_s+' ' : nil}Options Account Summary"
+        output.puts "\n#{year ? year.to_s+' ' : nil}Options Accounts Summary"
         output.puts acct_sum.render(
           :unicode,
           alignments: %i[left left right right right right right],
@@ -105,7 +105,7 @@ module Tmt
           end
         }
 
-        output.puts "\n#{year ? year.to_s+' ' : nil}By Month Realized P/L $ / Strategies Summary"
+        output.puts "\n#{year ? year.to_s+' ' : nil}By Month Realized P/L $ #{pastel.dim('|')} Strategies Summary #{pastel.dim('(closed only)')}"
         output.puts table.render(
           :unicode,
           alignments: header_array.length > 2 ? %i[left right right left right right right] : %i[left right left right right right],
