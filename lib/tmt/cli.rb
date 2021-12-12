@@ -211,18 +211,5 @@ module Tmt
       end
     end
     map %w[--open -o --new -n] => :open
-
-    # config
-    # desc 'config', 'Command description...'
-    # method_option :help, aliases: '-h', type: :boolean,
-    #                      desc: 'Display usage information'
-    # def config(*)
-    #   if options[:help]
-    #     invoke :help, ['config']
-    #   else
-    #     require_relative 'commands/config'
-    #     Tmt::Commands::Config.new(options).execute
-    #   end
-    # end
   end
 end
