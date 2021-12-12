@@ -2,11 +2,12 @@
 
 > TMT-CLI is a options trade tracking cli tool for my own **personal** uses
 ```diff
-- THIS REPO IS PUBLIC FOR REFERENCE PURPOSES ONLY! -
+- ⚠ THIS REPO IS PUBLIC FOR REFERENCE PURPOSES ONLY!
+- NO TESTS! THE CODE CAN BE A MESS. IT'S JUST FOR ME
 ```
 
 ## Purpose
-A simple Ruby cli (command-line-interface) to track my option trades, show insights and optionally, update the prices on-demand.
+A simple cli (command-line-interface) to track my option trades, show insights and optionally, update the prices on-demand.
 
 ## Disclaimer
 Any/All results are for entertainment purposes only. **Not financial advice**.
