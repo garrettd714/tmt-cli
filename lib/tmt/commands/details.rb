@@ -2,7 +2,7 @@
 
 require_relative '../command'
 require_relative '../db'
-require_relative '../tool'
+require_relative '../utilities/tool'
 require 'tty-table'
 
 module Tmt
