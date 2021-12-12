@@ -38,6 +38,7 @@ class Trade < ApplicationRecord
   scope :no_paper, -> { where.not(account: :paper) }
   # closed in year OR opened in year but not closed yet. sqlite3 query
   scope :year, ->(year) { where("cast(strftime('%Y', closed_at) as int) = ?", year).or(Trade.where("(closed_at IS NULL AND cast(strftime('%Y', opened) as int) = ?)", year)) }
+  scope :close_month, ->(month) { where("cast(strftime('%m', closed_at) as int) = ?", month) }
 
   def symbols
     val = super
@@ -52,6 +53,21 @@ class Trade < ApplicationRecord
 
   def profit?
     price > mark
+  end
+
+  def profitable_trade?
+    return true if profit?
+
+    # if loss, look at the next closed trade to see if it was an adjustment
+    #   if adjustment was made, was the combinded result profitable?
+    t2 = Trade.closed.where(ticker: ticker).where('id > ?', id).order(closed_at: :asc).first
+    if t2 && t2.adjustment?
+      return false unless t2.profit?
+
+      (t2.points + points).positive?
+    else
+      false
+    end
   end
 
   def loss?
