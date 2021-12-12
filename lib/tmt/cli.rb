@@ -30,6 +30,24 @@ module Tmt
     end
     map %w[--version -v] => :version
 
+    # summary
+    desc 'summary', 'Options portfolio summary, -s [--ytd --year=2021 -y=2021]'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    method_option :ytd, type: :boolean, default: false,
+                        desc: 'Only display Year-to-Date summary'
+    method_option :year, aliases: '-y', type: :numeric,
+                         desc: 'Display summary for given year'
+    def summary(*)
+      if options[:help]
+        invoke :help, ['summary']
+      else
+        require_relative 'commands/summary'
+        Tmt::Commands::Summary.new(options).execute
+      end
+    end
+    map %w[--summary -s] => :summary
+
     # account
     desc 'account token', 'Account summary, -a token [--ytd --year=2021 -y=2021]'
     method_option :help, aliases: '-h', type: :boolean,
@@ -160,7 +178,7 @@ module Tmt
         Tmt::Commands::Details.new(id, options).execute
       end
     end
-    map %w[--details -d --show -s] => :details
+    map %w[--details -d --show] => :details
 
     # positions
     desc 'positions', 'List positions, -p [--list | -l]'
