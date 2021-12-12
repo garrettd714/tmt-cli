@@ -3,7 +3,6 @@
 require_relative '../command'
 require_relative '../db'
 require_relative '../settings'
-require_relative '../tool'
 require 'tty-table'
 require 'yaml'
 
