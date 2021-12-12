@@ -2,8 +2,7 @@
 
 require_relative '../command'
 require_relative '../db'
-require_relative '../tool'
-# require_relative '../refresh'
+require_relative '../utilities/tool'
 require 'tty-table'
 require 'tty-spinner'
 require 'pastel'
@@ -22,24 +21,6 @@ module Tmt
 
       def execute(_input: $stdin, output: $stdout) # rubocop:disable all
         errors = []
-        # if options[:refresh]
-        #   spinner = TTY::Spinner.new('[:spinner] Refreshing data...')
-        #   spinner.auto_spin
-        #   scope = if Trade.active.stocks.count > 5
-        #             errors << "Due to API rate limiting any paper trades have not been refreshed\n"
-        #             Trade.active.stocks.no_paper
-        #           else
-        #             Trade.active.stocks
-        #           end
-        #   scope.order(updated_at: :asc).each_with_index do |t, i|
-        #     Tmt::Refresh.call(t) if i < 5 # configurable
-        #     errors << "API limit reached, #{t.ticker.upcase} not refreshed. Enter trade 'mark' ['ticker_price'] manually\n" if i >= 5
-        #   rescue StandardError => e
-        #     errors << e.message
-        #   end
-        #   spinner.stop("Done!\n")
-        # end
-
         # futures table
         table = TTY::Table.new(
           [
