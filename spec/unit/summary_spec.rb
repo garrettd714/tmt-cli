@@ -1,7 +1,7 @@
 require 'tmt/commands/summary'
 
 RSpec.describe Tmt::Commands::Summary do
-  it "executes `summary` command successfully" do
+  xit "executes `summary` command successfully" do
     output = StringIO.new
     options = {}
     command = Tmt::Commands::Summary.new(options)

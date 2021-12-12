@@ -1,7 +1,7 @@
 require 'tmt/commands/account'
 
 RSpec.describe Tmt::Commands::Account do
-  it "executes `account` command successfully" do
+  xit "executes `account` command successfully" do
     output = StringIO.new
     ticker = nil
     options = {}

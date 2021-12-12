@@ -3,14 +3,17 @@ RSpec.describe "`tmt account` command", type: :cli do
     output = `tmt help account`
     expected_output = <<-OUT
 Usage:
-  tmt account TICKER
+  tmt account token
 
 Options:
-  -h, [--help], [--no-help]  # Display usage information
+  -h, [--help], [--no-help]      # Display usage information
+      [--ytd], [--no-ytd]        # Only display Year-to-Date history
+  -y, [--year=N]                 # Display history for given year
+  -d, [--detail], [--no-detail]  # Display table of ticker details
 
-Command description...
+Account summary, -a token [--ytd --year=2021 -y=2021]
     OUT
 
-    expect(output).to eq(expected_output)
+    expect(output).to include(expected_output)
   end
 end

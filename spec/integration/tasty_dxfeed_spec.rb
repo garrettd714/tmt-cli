@@ -8,7 +8,7 @@ Usage:
 Options:
   -h, [--help], [--no-help]  # For tasty-refresh use only
 
-Tasty streamer dxfeed symbols for internal use only
+Tasty streamer dxfeed symbols hook (for streamer use only)
     OUT
 
     expect(output).to include(expected_output)

@@ -7,10 +7,12 @@ Usage:
 
 Options:
   -h, [--help], [--no-help]  # Display usage information
+      [--ytd], [--no-ytd]    # Only display Year-to-Date summary
+  -y, [--year=N]             # Display summary for given year
 
-Command description...
+Options portfolio summary, -s [--ytd --year=2021 -y=2021]
     OUT
 
-    expect(output).to eq(expected_output)
+    expect(output).to include(expected_output)
   end
 end

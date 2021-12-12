@@ -10,7 +10,7 @@ Options:
       [--bid=N]              # bid from tastyworks
       [--ask=N]              # ask from tastyworks
 
-Tasty streamer update for internal use only
+Tasty streamer quote update hook (for streamer use only)
     OUT
 
     expect(output).to include(expected_output)

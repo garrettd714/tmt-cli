@@ -8,7 +8,7 @@ Usage:
 Options:
   -h, [--help], [--no-help]  # For tasty-refresh use only
 
-Tasty streamer mark refresh on exit for internal use only
+Tasty streamer mark refresher hook (for streamer use only)
     OUT
 
     expect(output).to include(expected_output)
