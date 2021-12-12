@@ -4,6 +4,7 @@ require 'uri'
 require 'net/http'
 require 'openssl'
 require 'json'
+require_relative '../settings'
 
 module Tmt
   # Rapid Api Integration (to fetch stock/etf prices and option chains)
@@ -27,7 +28,7 @@ module Tmt
 
       request = Net::HTTP::Get.new(url)
       request['x-rapidapi-host'] = 'option-chain.p.rapidapi.com'
-      request['x-rapidapi-key'] = ENV.fetch('RAPIDAPI_KEY', '')
+      request['x-rapidapi-key'] = Settings.rapidapi_key
 
       response = http.request(request)
       raise StandardError, "Error fetching live data for #{ticker.upcase}. Enter trade 'mark' ['ticker_price'] manually\n" if response.code != '200'
