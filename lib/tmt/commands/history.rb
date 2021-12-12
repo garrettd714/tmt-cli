@@ -2,10 +2,10 @@
 
 require_relative '../command'
 require_relative '../db'
+require_relative '../settings'
 require_relative '../tool'
 require 'tty-table'
-require 'tty-spinner'
-require 'pastel'
+require 'yaml'
 
 module Tmt
   module Commands
@@ -71,7 +71,7 @@ module Tmt
               format('%.2f', t.mark),
               # t.adjustment? ? format('%.2f', (((t.total_credit - t.mark) / t.total_credit.to_f) * 100).round(2)) : format('%.2f', t.max_profit_pct),
               # show account drawdown when loss
-              t.profit? ? format('%.2f', t.max_profit_pct) : format('%.2f', ((t.points * t.multiplier * t.contracts) / 15000.00) * 100),
+              t.profit? ? format('%.2f', t.max_profit_pct) : format('%.2f', ((t.points * t.multiplier * t.contracts) / Settings.ivl_size.to_f) * 100),
               t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts) : format('%.2f', t.points * t.multiplier * t.contracts),
               t.expiration.strftime('%m/%d/%y'),
               t.accel_return.positive? ? "#{format('%.2f', t.accel_return)}x" : t.roll_indicator,
@@ -210,7 +210,7 @@ module Tmt
       end
 
       def pl_pct_fraction
-        (scope.map(&:points).reduce(:+) * 50 - total_fees) / ENV.fetch('ivl_size', 15000)
+        (scope.map(&:points).reduce(:+) * 50 - total_fees) / Settings.ivl_size
       end
 
       def trading_days_year
@@ -221,6 +221,10 @@ module Tmt
       # (((1 + {pl_pct_fraction}) ^ (365/{trading_days_year})) - 1) * 100 => 17.45(%)
       def annualized_ror
         (((1 + pl_pct_fraction)**(365 / trading_days_year)) - 1) * 100
+      end
+
+      def ivl_size
+        YAML.safe_load(File.read(File.join(File.dirname(__FILE__), '../../../settings.yml'))).fetch('ivl_size')
       end
     end
   end

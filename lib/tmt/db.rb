@@ -2,10 +2,12 @@
 
 require 'sqlite3'
 require 'active_record'
+require 'yaml'
+require_relative './settings'
 
 ActiveRecord::Base.establish_connection(
   adapter: 'sqlite3',
-  database: '/Users/garrett/Projects/tmt/tmt.db' # 'tmt.db'
+  database: Tmt::Settings.db_path
 )
 
 ActiveRecord::Base.logger = Logger.new($stdout)
