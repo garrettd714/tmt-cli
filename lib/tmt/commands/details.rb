@@ -3,10 +3,7 @@
 require_relative '../command'
 require_relative '../db'
 require_relative '../tool'
-require_relative '../refresh'
 require 'tty-table'
-require 'tty-spinner'
-require 'pastel'
 
 module Tmt
   module Commands
@@ -21,16 +18,6 @@ module Tmt
 
       def execute(_input: $stdin, output: $stdout) # rubocop:disable all
         error = nil
-        if options[:refresh]
-          spinner = TTY::Spinner.new('[:spinner] Refreshing data...')
-          spinner.auto_spin
-          begin
-            Tmt::Refresh.call(trade)
-          rescue StandardError => e
-            error = e.message
-          end
-          spinner.stop('Done!')
-        end
         tool = trade.open? ? Tool.call(trade) : OpenStruct.new(result: 'closed', details: 'n/a')
         table = TTY::Table.new(
           [
