@@ -12,6 +12,8 @@
 # db
 tmt.db
 tmt-*.db
+# settings
+settings.yml
 
 # mac osx files
 .DS_Store
