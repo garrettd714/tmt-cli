@@ -69,13 +69,15 @@ module Tmt
     map %w[--account -a] => :account
 
     # history
-    desc 'history ticker', 'Display trade history for ticker, -hi ticker [--history ticker] [--ytd --year=2021 -y=2021]'
+    desc 'history ticker', 'Display trade history for ticker, -hi ticker [--history ticker] [--ytd --year=2021 -y=2021 -n=1]'
     method_option :help, aliases: '-h', type: :boolean,
                          desc: 'Display usage information'
     method_option :ytd, type: :boolean, default: false,
                         desc: 'Only display Year-to-Date history'
     method_option :year, aliases: '-y', type: :numeric,
                          desc: 'Display history for given year'
+    method_option :normalize, aliases: '-n', type: :numeric,
+                              desc: 'Normalize contracts to value'
     def history(ticker)
       if options[:help]
         invoke :help, ['history']

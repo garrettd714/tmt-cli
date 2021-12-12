@@ -10,13 +10,14 @@ module Tmt
   module Commands
     # class comment
     class History < Tmt::Command
-      attr_reader :ticker, :options
+      attr_reader :ticker, :options, :normalized
 
       def initialize(ticker, options)
         @ticker = ticker
         @options = options
         @future = futures?
         @stock = stock?
+        @normalized = options['normalize']
       end
 
       def execute(input: $stdin, output: $stdout)
@@ -36,12 +37,12 @@ module Tmt
             [
               scope.where.not(adjustment: true).length,
               year ? format('%.2f', annualized_ror) : '--',
-              format('%.2f', scope.map(&:points).reduce(:+)),
+              normalized.present? ? format('%.2f', scope.map(&:points).reduce(:+) * normalized) : format('%.2f', scope.map(&:points).reduce(:+)),
               format('%.2f', pl_pct_fraction * 100),
-              format('%.2f', scope.map(&:points).reduce(:+) * 50 - total_fees),
+              normalized.present? ? format('%.2f', scope.map(&:points).reduce(:+) * 50 * normalized - (total_fees * normalized)) : format('%.2f', scope.map(&:points).reduce(:+) * 50 - total_fees),
               format('%.2f', scope.closed.map(&:days_held).reduce(:+) / scope.closed.length),
               scope.where(adjustment: true).length,
-              format('%.2f', total_fees)
+              normalized.present? ? format('%.2f', total_fees * normalized) : format('%.2f', total_fees)
             ]
           ]
         ) if @future
@@ -65,13 +66,12 @@ module Tmt
             [
               t.id,
               "#{t.ticker.split(/(?<=[S])/)[0]}#{pastel.dim(t.ticker.split(/(?<=[S])/)[1])} #{pastel.dim(t.root_symbol)}",
-              t.size,
+              normalized.present? ? normalized * -1 : t.size,
               format('%.2f', t.price),
               format('%.2f', t.mark),
-              # t.adjustment? ? format('%.2f', (((t.total_credit - t.mark) / t.total_credit.to_f) * 100).round(2)) : format('%.2f', t.max_profit_pct),
               # show account drawdown when loss
-              t.profit? ? format('%.2f', t.max_profit_pct) : format('%.2f', ((t.points * t.multiplier * t.contracts) / Settings.ivl_size.to_f) * 100),
-              t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts) : format('%.2f', t.points * t.multiplier * t.contracts),
+              t.profit? ? format('%.2f', t.max_profit_pct) : format('%.2f', ((t.points * t.multiplier * (normalized || t.contracts)) / Settings.ivl_size.to_f) * 100),
+              t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * (normalized || t.contracts)) : format('%.2f', t.points * t.multiplier * (normalized || t.contracts)),
               t.expiration.strftime('%m/%d/%y'),
               t.accel_return.positive? ? "#{format('%.2f', t.accel_return)}x" : t.roll_indicator,
               t.days_held,
@@ -93,7 +93,7 @@ module Tmt
           [
             [
               scope.where.not(adjustment: true).length,
-              format('%.2f', scope.map { |t| t.points * t.multiplier * t.contracts }.reduce(:+) - total_fees),
+              format('%.2f', scope.map { |t| t.points * t.multiplier * (normalized || t.contracts) }.reduce(:+) - total_fees),
               format('%.2f', scope.closed.map(&:days_held).reduce(:+) / scope.closed.length),
               scope.where(adjustment: true).length,
               format('%.2f', total_fees)
@@ -120,12 +120,11 @@ module Tmt
           scope.order(opened: :desc).all.map do |t|
             [
               t.adjustment? ? "#{t.id}#{"\u00AA".encode('utf-8')}" : t.id,
-              t.size,
+              normalized.present? ? normalized * -1 : t.size,
               format('%.2f', t.price),
               format('%.2f', t.mark),
               format('%.2f', t.max_profit_pct),
-              # t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts) : format('%.2f', t.points * t.multiplier * t.contracts),
-              format('%.2f', t.points * t.multiplier * t.contracts),
+              format('%.2f', t.points * t.multiplier * (normalized || t.contracts)),
               t.expiration.strftime('%m/%d/%y'),
               t.accel_return.positive? ? "#{format('%.2f', t.accel_return)}x" : '--',
               t.days_held,
@@ -135,7 +134,7 @@ module Tmt
             ]
           end
         ) if @stock
-
+        output.puts pastel.bold.red("\nTrade size normalized to -#{normalized}, actual results may vary") if normalized
         output.puts "\n#{ticker.upcase}#{year ? ' '+year.to_s : nil} SUMMARY\n" + summary.render(
           :unicode,
           alignments: %i[left right right right right right right right],
