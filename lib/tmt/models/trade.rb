@@ -61,7 +61,7 @@ class Trade < ApplicationRecord
     # if loss, look at the next closed trade to see if it was an adjustment
     #   if adjustment was made, was the combinded result profitable?
     t2 = Trade.closed.where(ticker: ticker).where('id > ?', id).order(closed_at: :asc).first
-    if t2 && t2.adjustment?
+    if t2&.adjustment?
       return false unless t2.profit?
 
       (t2.points + points).positive?
@@ -72,6 +72,11 @@ class Trade < ApplicationRecord
 
   def loss?
     price < mark
+  end
+
+  # For untested/roll up/roll down adjustments, change price and strike on trade and add note with "!ROLL!" for positions treament
+  def rolled?
+    note.match?(/¡ROLL!/)
   end
 
   def lte45days?

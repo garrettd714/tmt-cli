@@ -74,15 +74,16 @@ module Tmt
           ],
           Trade.active.stocks.order(expiration: :asc, opened: :asc).all.map do |t|
             t.ticker = "#{t.ticker}#{"\u00AA".encode('utf-8')}" if t.adjustment?
+            t.ticker = "#{t.ticker}#{"\u02B6".encode('utf-8')}" if t.rolled?
             t.ticker = "#{t.ticker}#{"\u00B0".encode('utf-8')}" if t.paper?
             [
               t.id,
               t.break_even? ? "#{t.ticker}/be" : t.itm? ? "#{t.ticker}/itm" : t.ticker,
               t.size,
-              t.adjustment? ? "#{format('%.2f', t.total_credit)}/tc" : format('%.2f', t.price),
+              t.adjustment? || t.rolled? ? "#{format('%.2f', t.real_price)}/tc" : format('%.2f', t.price),
               format('%.2f', t.mark),
-              t.adjustment? ? "#{format('%.2f', (((t.total_credit - t.mark) / t.total_credit.to_f) * 100).round(2))}/adj" : format('%.2f', t.max_profit_pct),
-              t.adjustment? ? "#{format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts)}/adj" : format('%.2f', t.points * t.multiplier * t.contracts),
+              t.adjustment? || t.rolled? ? "#{format('%.2f', (((t.real_price - t.mark) / t.real_price.to_f) * 100).round(2))}/adj" : format('%.2f', t.max_profit_pct),
+              t.adjustment? || t.rolled? ? "#{format('%.2f', (t.real_price - t.mark) * t.multiplier * t.contracts)}/adj" : format('%.2f', t.points * t.multiplier * t.contracts),
               # format('%.2f', t.max_profit_pct),
               # format('%.2f', t.points * t.multiplier * t.contracts),
               t.expiration.strftime('%m/%d/%y'),
