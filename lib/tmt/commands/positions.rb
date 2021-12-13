@@ -81,8 +81,8 @@ module Tmt
               t.size,
               t.adjustment? ? "#{format('%.2f', t.total_credit)}/tc" : format('%.2f', t.price),
               format('%.2f', t.mark),
-              t.adjustment? ? format('%.2f', (((t.total_credit - t.mark) / t.total_credit.to_f) * 100).round(2)) : format('%.2f', t.max_profit_pct),
-              t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts) : format('%.2f', t.points * t.multiplier * t.contracts),
+              t.adjustment? ? "#{format('%.2f', (((t.total_credit - t.mark) / t.total_credit.to_f) * 100).round(2))}/adj" : format('%.2f', t.max_profit_pct),
+              t.adjustment? ? "#{format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts)}/adj" : format('%.2f', t.points * t.multiplier * t.contracts),
               # format('%.2f', t.max_profit_pct),
               # format('%.2f', t.points * t.multiplier * t.contracts),
               t.expiration.strftime('%m/%d/%y'),
@@ -125,8 +125,10 @@ module Tmt
             elsif row_index.positive? && col_index == 1
               val.match?(/\/be/) ? pastel.black.on_red(val.gsub(/\/be/, '')) : val.match?(/\/itm/) ? pastel.black.on_yellow(val.gsub(/\/itm/, '')) : val
             elsif row_index.positive? && col_index == 3
-              val.match?(/\/tc/) ? pastel.black.on_bright_black(val.gsub(/\/tc/, ' ')) : val
+              val.match?(/\/tc/) ? pastel.black.on_bright_black(" #{val.gsub(/\/tc/, '')}") : val
             elsif row_index.positive? && [5, 6].include?(col_index)
+              color = val.to_f.positive? ? 'green' : 'bright_red'
+              return pastel.send(color.to_sym).on_bright_black("    #{val.gsub(/\/adj/, '')}") if val.match?(/\/adj/)
               (val.to_f.positive? ? pastel.green(val) : pastel.red(val))
             elsif col_index == 10 && row_index.positive?
               val.match?(/open/i) ? pastel.green(val) : pastel.red(val)
