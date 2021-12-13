@@ -38,6 +38,8 @@ module Tmt
                         desc: 'Only display Year-to-Date summary'
     method_option :year, aliases: '-y', type: :numeric,
                          desc: 'Display summary for given year'
+    method_option :acct_only, type: :boolean,
+                              desc: 'Display account summary only'
     def summary(*)
       if options[:help]
         invoke :help, ['summary']

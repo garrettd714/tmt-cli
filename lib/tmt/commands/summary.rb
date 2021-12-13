@@ -13,6 +13,7 @@ module Tmt
       def initialize(options) # rubocop:disable Lint/MissingSuper
         @options = options
         @paper = options['paper']
+        @acct_only = options['acct_only']
       end
 
       def execute(input: $stdin, output: $stdout) # rubocop:disable all
@@ -83,7 +84,7 @@ module Tmt
             a << 0 if strat_scope.closed.size.zero?
             a
           end
-        )
+        ) unless @acct_only
 
         output.puts "\n#{year ? year.to_s+' ' : nil}Options Accounts Summary"
         output.puts acct_sum.render(
@@ -105,35 +106,37 @@ module Tmt
           end
         }
 
-        output.puts "\n#{year ? year.to_s+' ' : nil}By Month Realized P/L $ #{pastel.dim('|')} Strategies Summary #{pastel.dim('(closed only)')}"
-        output.puts table.render(
-          :unicode,
-          alignments: header_array.length > 2 ? %i[left right right left right right right] : %i[left right left right right right],
-          padding: [0, 1, 0, 1]
-        ) { |renderer|
-          renderer.border.separator = :each_row
-          renderer.filter = ->(val, row_index, col_index) do
-            if col_index.zero?
-              pastel.white.on_blue(val)
-            elsif row_index.zero? && col_index < (header_array.size)
-              pastel.white.on_blue(val)
-            elsif row_index.zero? && col_index >= (header_array.size)
-              pastel.black.on_bright_black(val)
-            elsif row_index.positive? && col_index < (header_array.size + 1)
-              return pastel.black.on_bright_black(val.titleize) if val.match?(/[A-Za-z?]/) || val.strip.empty?
+        if table
+          output.puts "\n#{year ? year.to_s+' ' : nil}By Month Realized P/L $ #{pastel.dim('|')} Strategies Summary #{pastel.dim('(closed only)')}"
+          output.puts table.render(
+            :unicode,
+            alignments: header_array.length > 2 ? %i[left right right left right right right] : %i[left right left right right right],
+            padding: [0, 1, 0, 1]
+          ) { |renderer|
+            renderer.border.separator = :each_row
+            renderer.filter = ->(val, row_index, col_index) do
+              if col_index.zero?
+                pastel.white.on_blue(val)
+              elsif row_index.zero? && col_index < (header_array.size)
+                pastel.white.on_blue(val)
+              elsif row_index.zero? && col_index >= (header_array.size)
+                pastel.black.on_bright_black(val)
+              elsif row_index.positive? && col_index < (header_array.size + 1)
+                return pastel.black.on_bright_black(val.titleize) if val.match?(/[A-Za-z?]/) || val.strip.empty?
 
-              return pastel.dim(val) if BigDecimal(val) == BigDecimal(0)
+                return pastel.dim(val) if BigDecimal(val) == BigDecimal(0)
 
-              val.to_f.positive? ? pastel.green(val) : pastel.red(val)
-            elsif col_index >= (header_array.size + 1)
-              return pastel.dim(val) if BigDecimal(val) == BigDecimal(0)
+                val.to_f.positive? ? pastel.green(val) : pastel.red(val)
+              elsif col_index >= (header_array.size + 1)
+                return pastel.dim(val) if BigDecimal(val) == BigDecimal(0)
 
-              val
-            else
-              val
+                val
+              else
+                val
+              end
             end
-          end
-        }
+          }
+        end
       end
 
       private
