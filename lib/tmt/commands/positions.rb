@@ -79,7 +79,7 @@ module Tmt
               t.id,
               t.break_even? ? "#{t.ticker}/be" : t.itm? ? "#{t.ticker}/itm" : t.ticker,
               t.size,
-              format('%.2f', t.price),
+              t.adjustment? ? "#{format('%.2f', t.total_credit)}/tc" : format('%.2f', t.price),
               format('%.2f', t.mark),
               t.adjustment? ? format('%.2f', (((t.total_credit - t.mark) / t.total_credit.to_f) * 100).round(2)) : format('%.2f', t.max_profit_pct),
               t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts) : format('%.2f', t.points * t.multiplier * t.contracts),
@@ -124,6 +124,8 @@ module Tmt
               pastel.white.on_blue(val)
             elsif row_index.positive? && col_index == 1
               val.match?(/\/be/) ? pastel.black.on_red(val.gsub(/\/be/, '')) : val.match?(/\/itm/) ? pastel.black.on_yellow(val.gsub(/\/itm/, '')) : val
+            elsif row_index.positive? && col_index == 3
+              val.match?(/\/tc/) ? pastel.black.on_bright_black(val.gsub(/\/tc/, ' ')) : val
             elsif row_index.positive? && [5, 6].include?(col_index)
               (val.to_f.positive? ? pastel.green(val) : pastel.red(val))
             elsif col_index == 10 && row_index.positive?
