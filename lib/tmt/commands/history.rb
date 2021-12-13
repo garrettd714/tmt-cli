@@ -12,7 +12,7 @@ module Tmt
     class History < Tmt::Command
       attr_reader :ticker, :options, :normalized
 
-      def initialize(ticker, options)
+      def initialize(ticker, options) # rubocop:disable Lint/MissingSuper
         @ticker = ticker
         @options = options
         @future = futures?
@@ -20,7 +20,7 @@ module Tmt
         @normalized = options['normalize']
       end
 
-      def execute(input: $stdin, output: $stdout)
+      def execute(_input: $stdin, output: $stdout)
         # futures summary
         summary = TTY::Table.new(
           [
