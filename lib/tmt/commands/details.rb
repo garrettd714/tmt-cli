@@ -66,7 +66,7 @@ module Tmt
             [
               'trade_id', trade.id,
               '', nil,
-              trade.adjustment? ? 'total_credit' : 'adjustment', trade.adjustment? ? trade.total_credit : 'No',
+              trade.adjustment? ? 'total_credit' : 'adjustment', trade.adjustment? ? trade.total_credit : trade.rolled? ? 'Rolled' : 'No',
               trade.adjustment? || trade.closed? ? 'trade P/L $' : '{trade p/l $}', trade.adjustment? || trade.closed? ? format('%.2f', trade_pl_dollars) : nil
             ],
             [
