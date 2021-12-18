@@ -1,0 +1,4 @@
+#!/bin/sh
+
+. /tmt-cli/app/.docker/secrets/.profile
+tmt-refresh >> /tmt-cli/app/.docker/logs/tmt_refresh.log 2>&1
