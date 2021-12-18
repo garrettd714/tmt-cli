@@ -15,11 +15,11 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Trade Management and Tracking CLI App in Ruby with a fluid interface for gathering trade info.}
   spec.homepage      = "https://github.com/garrettd714/tmt-cli"
 
-  manifest_path      = File.expand_path("tmt.manifest", __dir__)
-  spec.files         = Dir[*File.read(manifest_path).split]
-  spec.bindir        = "exe"
-  spec.executables   = ["tmt"]
-  spec.require_paths = ["lib"]
+  # manifest_path      = File.expand_path("tmt.manifest", __dir__)
+  # spec.files         = Dir[*File.read(manifest_path).split]
+  # spec.bindir        = "exe"
+  # spec.executables   = ["tmt"]
+  # spec.require_paths = ["lib"]
 
   spec.required_ruby_version = ">= 2.5.0"
 
