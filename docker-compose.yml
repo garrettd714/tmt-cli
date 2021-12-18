@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  app:
+    # only need to rebuild image if Gemfile or Dockerfile change
+    image: garrettd714/tmt-cli:latest
+    volumes:
+      # source files
+      - .:/tmt-cli/app
+      # db in "iCloud Drive" on Mac
+      - /Users/garrett/Library/Mobile Documents/com~apple~CloudDocs/docker/tmt-cli/db:/tmt-cli/data
+      # cron tasks to 10 minute bucket
+      - ./.docker/cron_tasks:/etc/periodic/5min/:ro
+    working_dir: /tmt-cli/app
+    command: bash -c "/tmt-cli/app/.docker/scripts/startup.sh && crond -f -l 8"
