@@ -6,6 +6,8 @@
 /pkg/
 /spec/reports/
 /tmp/
+/.docker/secrets/**
+/.docker/logs/**
 
 # rspec failure tracking
 .rspec_status
