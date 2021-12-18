@@ -17,24 +17,27 @@ async def main_loop(session: TastyAPISession, streamer: DataStreamer):
     }
 
     # Subscribe
+    LOGGER.info(f'Adding subscription(s): {sub_values}')
     await streamer.add_data_sub(sub_values)
 
     # Update the bid/ask via TMT-CLI
     streamer_symbols = symbols.split(',')
     async for item in streamer.listen():
-        if streamer_symbols:
-            for data in item.data:
-                try:
-                    streamer_symbols.remove(data['eventSymbol'])
-                    system('tmt tasty_stream {} --bid={} --ask={}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
-                    if not streamer_symbols:
-                        break
-                except:
-                    print('.', end='')
-                    continue
-        else:
-            system('tmt tasty_refresh')
+        for data in item.data:
+            try:
+                if not streamer_symbols:
+                    break
+                streamer_symbols.remove(data['eventSymbol'])
+                system('tmt tasty_stream {} --bid={} --ask={}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
+                if not streamer_symbols:
+                    break
+            except:
+                print('.', end='')
+                continue
+        if not streamer_symbols:
             break
+    system('tmt tasty_refresh')
+    LOGGER.info(f'================================ End')
 
 
 def main():
