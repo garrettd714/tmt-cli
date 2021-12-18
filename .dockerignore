@@ -1,0 +1,29 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/
+/tmp/
+/.docker/
+
+# rspec failure tracking
+.rspec_status
+.rspec
+# db
+*.db
+*.sqlite
+# settings
+settings.yml
+
+# mac osx files
+.DS_Store
+# git
+.gitignore
+/.git/
+
+# other
+.travis.yml
+BUGS.md
+CODE_OF_CONDUCT.md
