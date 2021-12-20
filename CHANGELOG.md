@@ -1,5 +1,23 @@
 ## Changelog
 
+### tbd [--]
+```diff
++ Positions: total credit, p/l %, p/l $ for trade w/ indicator
++ Summary: --acct-only option
++ Positions: roll treatment w/ indicator based on note token
++ Details: Adjustment value to "rolled" based on note token
++ Streamer: Bugfix: Stop hang after symbols depleted
++ Containerize app w/ Docker & Compose on Alpine Linux
++   * with cron support for tmt-refresh
++   * bind mounts to persist the db and logs
+```
+> _Resulting Docker image not optimized for size (~326MB)_    
+> Build*: `docker image build -t garrettd714/tmt-cli .`    
+> Run app: `docker compose up -d`    
+> Prompt: `docker container exec -it tmt-app-1 bash`   
+> Stop app: `docker compose down`     
+> _*Image only requires rebuild if Gemfile or Dockerfile are changed._
+
 ### v0.4.0 [2021-12-12]
 ```diff
 + History normalize option
