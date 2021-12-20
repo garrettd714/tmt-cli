@@ -1,3 +1,4 @@
 ---
 db_path: '/tmt-cli/data/tmt.sqlite'
 rapidapi_key: 'I-unsubscribed-from-this-paid-subscription'
+ivl_size: 20000
