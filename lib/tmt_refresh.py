@@ -28,6 +28,7 @@ async def main_loop(session: TastyAPISession, streamer: DataStreamer):
                 if not streamer_symbols:
                     break
                 streamer_symbols.remove(data['eventSymbol'])
+                # LOGGER.info('{} data: {}'.format(data['eventSymbol'], data))
                 system('tmt tasty_stream {} --bid={} --ask={}'.format(data['eventSymbol'], data['bidPrice'], data['askPrice']))
                 if not streamer_symbols:
                     break

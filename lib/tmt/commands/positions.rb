@@ -137,7 +137,7 @@ module Tmt
               val
             end
           end
-        } if stocks
+        } + "\n\n" if stocks
       end
 
       def up_arrow

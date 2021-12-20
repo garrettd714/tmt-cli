@@ -172,7 +172,7 @@ module Tmt
               val
             end
           end
-        } if table
+        } + "\n\n" if table
       end
 
       private
