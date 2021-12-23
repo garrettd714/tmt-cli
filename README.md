@@ -3,7 +3,7 @@
 > TMT-CLI is a options trade tracking cli tool for my own **personal** uses
 ```diff
 - ⚠ THIS REPO IS PUBLIC FOR REFERENCE PURPOSES ONLY!
-- NO TESTS! THE CODE CAN BE A MESS. IT'S JUST FOR ME
+- NO TESTS! THE CODE CAN BE MESSY. IT'S JUST FOR ME/FUN
 ```
 
 ## Purpose
@@ -30,7 +30,7 @@ Any/All results are for entertainment purposes only. **Not financial advice**.
         * Tastyworks (unofficially with brokerage account)
 * Adjustment support with modified trade stats in Positions and indicator
 * [_experimental_] Trade management tool and insights (wip)
-* [_experimental_] Margin requirements calculator (wip)
+* Estimated Margin requirements calculator (unused/wip)
 * Fully supported selling options strategies:
     * Short Strangle
     * Short Put/CSP-Cash-secured Put
@@ -51,6 +51,7 @@ _more info on data streamer portion @ [tastyworks_api](https://github.com/boyan-
 * [sqlite](https://www.sqlite.org/index.html) - Database
 * [ActiveRecord](https://github.com/rails/rails/tree/main/activerecord) - ORM
 * [Tastyworks (Unofficial) API](https://github.com/boyan-soubachov/tastyworks_api) - Python package (see above)
+* [Docker](https://www.docker.com/) - Container
 
 
 ## Copyright
