@@ -137,6 +137,9 @@ module Tmt
             end
           }
         end
+        output.puts "\n"
+      rescue SQLite3::BusyException
+        output.puts pastel.red('The database is currently locked while updating, please try again')
       end
 
       private
