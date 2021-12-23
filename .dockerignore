@@ -27,3 +27,6 @@ settings.yml
 .travis.yml
 BUGS.md
 CODE_OF_CONDUCT.md
+
+# self
+.dockerignore
