@@ -29,6 +29,8 @@ module Tmt
             '   points',
             '   p/l %',
             '   p/l $',
+            '  avg p%',
+            '  avg ar',
             'held avg',
             '   rolls',
             '    fees'
@@ -36,13 +38,15 @@ module Tmt
           [
             [
               scope.where.not(adjustment: true).length,
-              year ? format('%.2f', annualized_ror) : '--',
+              year ? (annualized_ror.positive? ? format('%.2f', annualized_ror) : '--') : '--',
               normalized.present? ? format('%.2f', scope.map(&:points).reduce(:+) * normalized) : format('%.2f', scope.map(&:points).reduce(:+)),
-              format('%.2f', pl_pct_fraction * 100),
-              normalized.present? ? format('%.2f', scope.map(&:points).reduce(:+) * 50 * normalized - (total_fees * normalized)) : format('%.2f', scope.map(&:points).reduce(:+) * 50 - total_fees),
+              normalized.present? ? format('%.2f', (scope.map(&:points).reduce(:+) * normalized * 50) / 15000.0 * 100) : format('%.2f', pl_pct_fraction * 100),
+              normalized.present? ? format('%.2f', scope.map(&:points).reduce(:+) * 50 * normalized) : format('%.2f', scope.map { |t| t.points * t.contracts }.reduce(:+) * 50 - total_fees),
+              format('%.2f', profits.sum(0.0) / profits.size * 100),
+              "#{format('%.2f', (accel_returns.sum(0.0) / accel_returns.size))}x",
               format('%.2f', scope.closed.map(&:days_held).reduce(:+) / scope.closed.length),
               scope.where(adjustment: true).length,
-              normalized.present? ? format('%.2f', total_fees * normalized) : format('%.2f', total_fees)
+              normalized.present? ? '--' : format('%.2f', total_fees)
             ]
           ]
         ) if @future
@@ -70,8 +74,8 @@ module Tmt
               format('%.2f', t.price),
               format('%.2f', t.mark),
               # show account drawdown when loss
-              t.profit? ? format('%.2f', t.max_profit_pct) : format('%.2f', ((t.points * t.multiplier * (normalized || t.contracts)) / Settings.ivl_size.to_f) * 100),
-              t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * (normalized || t.contracts)) : format('%.2f', t.points * t.multiplier * (normalized || t.contracts)),
+              t.profit? ? format('%.2f', t.max_profit_pct) : normalized.present? ? format('%.2f', (t.points * 50 * normalized) / 15000.0 * 100) : format('%.2f', (t.points * 50 * t.contracts) / (Settings.ivl_size.to_f * t.contracts) * 100),
+              format('%.2f', t.points * t.multiplier * (normalized || t.contracts)),
               t.expiration.strftime('%m/%d/%y'),
               t.accel_return.positive? ? "#{format('%.2f', t.accel_return)}x" : t.roll_indicator,
               t.days_held,
@@ -134,10 +138,10 @@ module Tmt
             ]
           end
         ) if @stock
-        output.puts pastel.bold.red("\nTrade size normalized to -#{normalized}, actual results may vary") if normalized
+        output.puts pastel.bold.red("\nTrade size normalized to -#{normalized}, actual results may vary. $15k account.") if normalized
         output.puts "\n#{ticker.upcase}#{year ? ' '+year.to_s : nil} SUMMARY\n" + summary.render(
           :unicode,
-          alignments: %i[left right right right right right right right],
+          alignments: %i[left right right right right right right right right right],
           padding: [0, 1, 0, 1]
         ) { |renderer|
           renderer.border.separator = :each_row
@@ -208,7 +212,8 @@ module Tmt
       end
 
       def pl_pct_fraction
-        (scope.map(&:points).reduce(:+) * 50 - total_fees) / Settings.ivl_size
+        # (scope.map(&:points).reduce(:+) * 50 - total_fees) / (scope.last.contracts * Settings.ivl_size)
+        (scope.map { |t| t.points * t.contracts }.reduce(:+) * 50) / (scope.last.contracts * Settings.ivl_size)
       end
 
       def trading_days_year
@@ -222,7 +227,30 @@ module Tmt
       end
 
       def ivl_size
-        YAML.safe_load(File.read(File.join(File.dirname(__FILE__), '../../../settings.yml'))).fetch('ivl_size')
+        # YAML.safe_load(File.read(File.join(File.dirname(__FILE__), '../../../settings.yml'))).fetch('ivl_size')
+        Settings.ivl_size
+      end
+
+      def accel_returns
+        @accel_returns ||= scope.closed.not_adjustment.map do |t|
+          if t.days_held.zero?
+            t.max_profit_pct_fraction / (0.9 / t.days_left)
+          elsif t.accel_return.positive?
+            t.accel_return
+          else
+            0.0
+          end
+        end
+      end
+
+      def profits
+        @profits ||= scope.closed.map do |t|
+          if t.profit?
+            t.max_profit_pct_fraction
+          # elsif t.adjustment?
+          #   (t.mark - t.total_credit) / t.total_credit * -100
+          end
+        end.compact
       end
     end
   end

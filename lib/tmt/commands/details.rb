@@ -131,7 +131,7 @@ module Tmt
       def trade_pl_dollars
         return (trade.total_credit - trade.mark) * trade.multiplier * trade.contracts if trade.adjustment? && trade.open?
 
-        return (((trade.total_credit - trade.mark) * trade.multiplier) - (trade.fees + trade.order_chain_fees)) if trade.adjustment? && trade.closed?
+        return (((trade.total_credit - trade.mark) * trade.multiplier * trade.contracts) - (trade.fees + trade.order_chain_fees)) if trade.adjustment? && trade.closed?
 
         trade.points * trade.multiplier * trade.contracts - trade.fees if trade.closed? # ok
       end

@@ -25,7 +25,7 @@ module Tmt
         table = TTY::Table.new(
           [
             'id',
-            'ticker  ',
+            'ticker    ',
             'size',
             ' price',
             '  mark',
@@ -46,7 +46,7 @@ module Tmt
               format('%.2f', t.mark),
               # t.adjustment? ? format('%.2f', (((t.total_credit - t.mark) / t.total_credit.to_f) * 100).round(2)) : format('%.2f', t.max_profit_pct),
               # show account drawdown when loss
-              t.profit? ? format('%.2f', t.max_profit_pct) : format('%.2f', ((t.points * t.multiplier * t.contracts) / 15000.00) * 100),
+              t.profit? ? format('%.2f', t.max_profit_pct) : format('%.2f', ((t.points * t.multiplier * t.contracts) / (15000.00 * t.contracts)) * 100),
               t.adjustment? ? format('%.2f', (t.total_credit - t.mark) * t.multiplier * t.contracts) : format('%.2f', t.points * t.multiplier * t.contracts),
               t.expiration.strftime('%m/%d/%y'),
               t.accel_return.positive? ? "#{format('%.2f', t.accel_return)}x" : t.roll_indicator,
@@ -60,11 +60,11 @@ module Tmt
         table2 = TTY::Table.new(
           [
             'id',
-            'ticker   ',
+            'ticker    ',
             'size',
             ' price',
             '  mark',
-            '  p/l %',
+            ' p/l  %',
             '  p/l $',
             "expiration #{up_arrow}",
             'ar rate  ',

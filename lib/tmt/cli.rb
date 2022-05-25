@@ -48,7 +48,25 @@ module Tmt
         Tmt::Commands::Summary.new(options).execute
       end
     end
-    map %w[--summary -s] => :summary
+    map %w[--summary -s -sum] => :summary
+
+    # summary_stock
+    desc 'summary_stock', 'Stock portfolio summary, -ss [--ytd --year=2021 -y=2021]'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    method_option :year, aliases: '-y', type: :numeric,
+                         desc: 'Display summary for given year'
+    method_option :acct_only, type: :boolean,
+                              desc: 'Display account summary only'
+    def summary_stock(*)
+      if options[:help]
+        invoke :help, ['summary_stock']
+      else
+        require_relative 'commands/summary_stock'
+        Tmt::Commands::SummaryStock.new(options).execute
+      end
+    end
+    map %w[--summary-stock -ss -ssum] => :summary_stock
 
     # account
     desc 'account token', 'Account summary, -a token [--ytd --year=2021 -y=2021]'
@@ -70,6 +88,26 @@ module Tmt
     end
     map %w[--account -a] => :account
 
+    # account_stock
+    desc 'account_stock token', 'Account Stock summary, -as token [--ytd --year=2021 -y=2021]'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    method_option :ytd, type: :boolean, default: false,
+                        desc: 'Only display Year-to-Date history'
+    method_option :year, aliases: '-y', type: :numeric,
+                         desc: 'Display history for given year'
+    method_option :detail, aliases: '-d', type: :boolean,
+                         desc: 'Display table of ticker details'
+    def account_stock(token)
+      if options[:help]
+        invoke :help, ['account_stock']
+      else
+        require_relative 'commands/account_stock'
+        Tmt::Commands::AccountStock.new(token, options).execute
+      end
+    end
+    map %w[--account-stock -as] => :account_stock
+
     # history
     desc 'history ticker', 'Display trade history for ticker, -hi ticker [--history ticker] [--ytd --year=2021 -y=2021 -n=1]'
     method_option :help, aliases: '-h', type: :boolean,
@@ -89,6 +127,23 @@ module Tmt
       end
     end
     map %w[--history -hi] => :history
+
+    desc 'history_stock ticker', 'Display trade history for ticker, -his ticker [--year=2021 -y=2021]'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    method_option :ytd, type: :boolean, default: false,
+                        desc: 'Only display Year-to-Date history'
+    method_option :year, aliases: '-y', type: :numeric,
+                         desc: 'Display history for given year'
+    def history_stock(ticker)
+      if options[:help]
+        invoke :help, ['history_stock']
+      else
+        require_relative 'commands/history_stock'
+        Tmt::Commands::HistoryStock.new(ticker, options).execute
+      end
+    end
+    map %w[--history-stock -his] => :history_stock
 
     # tasty_refresh
     desc 'tasty_refresh', 'Tasty streamer mark refresher hook (for streamer use only)'
@@ -202,7 +257,7 @@ module Tmt
     map %w[--positions -p --list -l] => :positions
 
     # open
-    desc 'open', 'Open a new trade, -o [--new | -n]'
+    desc 'open', 'Open a new options trade, -o'
     method_option :help, aliases: '-h', type: :boolean,
                          desc: 'Display usage information'
     def open(*)
@@ -214,6 +269,20 @@ module Tmt
         Tmt::Commands::Open.new(options).execute
       end
     end
-    map %w[--open -o --new -n] => :open
+    map %w[--open -o] => :open
+
+    # open_stock
+    desc 'open_stock', 'Open a new stock trade, -os'
+    method_option :help, aliases: '-h', type: :boolean,
+                         desc: 'Display usage information'
+    def open_stock(*)
+      if options[:help]
+        invoke :help, ['open_stock']
+      else
+        require_relative 'commands/open_stock'
+        Tmt::Commands::OpenStock.new(options).execute
+      end
+    end
+    map %w[--open-stock -os] => :open_stock
   end
 end

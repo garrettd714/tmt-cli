@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Starting startup.sh..."
-echo "Add 10min cron period"
+echo "Add 5min cron period"
 echo "*/5 * * * * run-parts /etc/periodic/5min" >> /etc/crontabs/root
 crontab -l
 cd /tmt-cli/app

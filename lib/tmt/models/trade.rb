@@ -11,7 +11,6 @@ class Trade < ApplicationRecord
   enum strategy: {
     uncategorized: 0,
     strangle: 1,
-    # es_strangle: 2,
     iron_condor: 5,
     covered_call: 10,
     short_put: 15,
@@ -36,6 +35,7 @@ class Trade < ApplicationRecord
   scope :futures, -> { where('ticker LIKE ?', '%/%') }
   scope :stocks, -> { where.not('ticker LIKE ?', '%/%') }
   scope :no_paper, -> { where.not(account: :paper) }
+  scope :not_adjustment, -> { where.not(adjustment: true) }
   # closed in year OR opened in year but not closed yet. sqlite3 query
   scope :year, ->(year) { where("cast(strftime('%Y', closed_at) as int) = ?", year).or(Trade.where("(closed_at IS NULL AND cast(strftime('%Y', opened) as int) = ?)", year)) }
   scope :close_month, ->(month) { where("cast(strftime('%m', closed_at) as int) = ?", month) }
