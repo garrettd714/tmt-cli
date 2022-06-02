@@ -44,7 +44,7 @@ module Tmt
               normalized.present? ? format('%.2f', scope.map(&:points).reduce(:+) * 50 * normalized) : format('%.2f', scope.map { |t| t.points * t.contracts }.reduce(:+) * 50 - total_fees),
               format('%.2f', profits.sum(0.0) / profits.size * 100),
               "#{format('%.2f', (accel_returns.sum(0.0) / accel_returns.size))}x",
-              format('%.2f', scope.closed.map(&:days_held).reduce(:+) / scope.closed.length),
+              format('%.2f', scope.closed.map(&:days_held).reduce(:+).to_f / scope.closed.length.to_f),
               scope.where(adjustment: true).length,
               normalized.present? ? '--' : format('%.2f', total_fees)
             ]
